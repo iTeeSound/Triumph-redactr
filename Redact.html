@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redactr - Scramble Text</title>
+</head>
+<body>
+  <h1><span style="color: blue;"<b>Redactr - Scramble Text</b></h1>
+  <form id="redactForm">
+    <label for="textInput">Enter the text to redact:</label><br>
+    <textarea id="textInput" name="textInput" rows="4" cols="50"></textarea><br><br>
+    <label for="wordsInput">Enter words to redact (separated by space):</label><br>
+    <input type="text" id="wordsInput" name="wordsInput"><br><br>
+    <button type="button" onclick="redactText()">Redact Now</button>
+  </form>
+  <div id="redactedText"></div>
+  <div id="stats"></div>
+
+  <script>
+    function redactText() {
+      var text = document.getElementById("textInput").value;
+      var wordsToRedact = document.getElementById("wordsInput").value;
+      var redactedText = text.replace(new RegExp("\\b(?:" + wordsToRedact.split(" ").map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join("|") + ")\\b", "gi"), "****");
+      var redactedElement = document.getElementById("redactedText");
+      redactedElement.textContent = "Redacted Text: " + redactedText;
+      
+      var statsElement = document.getElementById("stats");
+      var wordsScanned = text.split(" ").length;
+      var matchedWords = (text.match(new RegExp("\\b(?:" + wordsToRedact.split(" ").map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join("|") + ")\\b", "gi")) || []).length;
+      var charactersScrambled = matchedWords * wordsToRedact.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').length;
+      statsElement.innerHTML = "Words scanned: " + wordsScanned + "<br>";
+      statsElement.innerHTML += "Matched words: " + matchedWords + "<br>";
+      statsElement.innerHTML += "Characters scrambled: " + charactersScrambled;
+    }
+  </script>
+</body>
+</html>
+
